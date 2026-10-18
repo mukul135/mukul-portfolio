@@ -3959,24 +3959,13 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   }
 
   function earthTextures() {
-    const W = 1536, H = 768;
+    const W = 1024, H = 512;
     const land = document.createElement('canvas'); land.width = W; land.height = H;
     const cloud = document.createElement('canvas'); cloud.width = W; cloud.height = H;
-    const night = document.createElement('canvas'); night.width = W; night.height = H;
-    const rough = document.createElement('canvas'); rough.width = W; rough.height = H;
-    const moonC = document.createElement('canvas'); moonC.width = 512; moonC.height = 256;
-
     const lctx = land.getContext('2d'), cctx = cloud.getContext('2d');
-    const nctx = night.getContext('2d'), rctx = rough.getContext('2d');
-    const mctx = moonC.getContext('2d');
+    const limg = lctx.createImageData(W, H), cimg = cctx.createImageData(W, H);
 
-    const limg = lctx.createImageData(W, H);
-    const cimg = cctx.createImageData(W, H);
-    const nimg = nctx.createImageData(W, H);
-    const rimg = rctx.createImageData(W, H);
-    const mimg = mctx.createImageData(512, 256);
-
-    const nA = makeNoise(1337), nB = makeNoise(9021), nC = makeNoise(4477), nD = makeNoise(6183);
+    const nA = makeNoise(1337), nB = makeNoise(9021), nC = makeNoise(4477);
 
     const fbm = (fn, x, y, wrap, oct) => {
       let v = 0, amp = 0.5, f = 1;
@@ -3987,172 +3976,76 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
       return v;
     };
 
-    const BASE = 7;
-    for (let y = 0; y < H; y++) {
-      const lat = y / H;
-      const yy = (lat - 0.5) * 2;
-      const absLat = Math.abs(yy);
+    const BASE = 8;   // grid cells across at octave 0
 
+    for (let y = 0; y < H; y++) {
+      const lat = y / H;                       // 0 = north pole
+      // squash toward the poles so continents don't smear
+      const yy = (lat - 0.5) * 2;
       for (let x = 0; x < W; x++) {
         const u = x / W;
         const gx = u * BASE, gy = lat * BASE * 0.5;
+        let h = fbm(nA, gx, gy, BASE, 5);
+        // pull height down near the equator edges so oceans dominate
+        h = h * 1.25 - 0.30 - Math.abs(yy) * 0.10;
 
-        let h = fbm(nA, gx, gy, BASE, 6);
-        const warpX = fbm(nB, gx * 1.5, gy * 1.5, BASE * 1.5, 3) * 0.35;
-        const warpY = fbm(nC, gx * 1.5, gy * 1.5, BASE * 1.5, 3) * 0.35;
-        h += fbm(nA, gx * 2 + warpX, gy * 2 + warpY, BASE * 2, 4) * 0.22 - 0.11;
+        const i = (y * W + x) * 4;
+        let r, g, b;
 
-        const idx = (y * W + x) * 4;
-        const sea = 0.50;
+        // ocean colour, always computed so we can blend the shoreline into it
+        const deep = Math.min(1, Math.max(0, (0.30 - h) * 3.2));
+        const or_ = 12 + (1 - deep) * 26;
+        const og = 54 + (1 - deep) * 60;
+        const ob = 104 + (1 - deep) * 62;
 
-        nimg.data[idx] = 0; nimg.data[idx + 1] = 0; nimg.data[idx + 2] = 0; nimg.data[idx + 3] = 255;
-
-        // Polar ice caps with fractal coastlines
-        if (absLat > 0.83) {
-          const iceFuzz = fbm(nD, gx * 3.5, gy * 3.5, BASE * 3.5, 3) * 0.08;
-          if (absLat + iceFuzz > 0.84) {
-            limg.data[idx]     = 238;
-            limg.data[idx + 1] = 246;
-            limg.data[idx + 2] = 255;
-            limg.data[idx + 3] = 255;
-            rimg.data[idx] = 110; rimg.data[idx + 1] = 110; rimg.data[idx + 2] = 110; rimg.data[idx + 3] = 255;
-
-            const pCloud = fbm(nC, gx * 1.5, gy * 1.5, BASE * 1.5, 4);
-            if (pCloud > 0.52) {
-              cimg.data[idx] = 255; cimg.data[idx + 1] = 255; cimg.data[idx + 2] = 255;
-              cimg.data[idx + 3] = Math.min(220, Math.round((pCloud - 0.52) * 380));
-            } else {
-              cimg.data[idx + 3] = 0;
-            }
-            continue;
-          }
-        }
-
-        if (h < sea) {
-          // Oceans: turquoise shelf shallows to abyssal navy
-          const depth = (sea - h) / sea;
-          if (depth < 0.055) {
-            // Continental shelf turquoise shallows
-            const t = depth / 0.055;
-            limg.data[idx]     = Math.round(26 * (1 - t) + 12 * t);
-            limg.data[idx + 1] = Math.round(118 * (1 - t) + 48 * t);
-            limg.data[idx + 2] = Math.round(152 * (1 - t) + 94 * t);
-          } else {
-            // Deep open ocean
-            const t = Math.min(1, (depth - 0.055) / 0.945);
-            limg.data[idx]     = Math.round(10 * (1 - t) + 4 * t);
-            limg.data[idx + 1] = Math.round(40 * (1 - t) + 14 * t);
-            limg.data[idx + 2] = Math.round(88 * (1 - t) + 38 * t);
-          }
-          limg.data[idx + 3] = 255;
-          // Ocean is specular (glossy low roughness for sun glint)
-          rimg.data[idx] = 22; rimg.data[idx + 1] = 22; rimg.data[idx + 2] = 22; rimg.data[idx + 3] = 255;
+        if (h > 0.27) {
+          const dry = fbm(nB, gx * 2.2, gy * 2.2, BASE * 2, 3);
+          if (h > 0.50) { r = 128; g = 122; b = 104; }           // highland
+          else if (dry > 0.55) { r = 176; g = 152; b = 96; }     // arid
+          else { r = 58; g = 104; b = 52; }                      // vegetation
+          const shade = 0.82 + fbm(nC, gx * 5, gy * 5, BASE * 5, 2) * 0.36;
+          r *= shade; g *= shade; b *= shade;
+          // feather the coast over a band of height rather than cutting it
+          // hard, which was giving the continents jagged, spiky edges
+          const coast = Math.min(1, (h - 0.27) / 0.05);
+          const e = coast * coast * (3 - 2 * coast);
+          r = or_ * (1 - e) + r * e;
+          g = og  * (1 - e) + g * e;
+          b = ob  * (1 - e) + b * e;
         } else {
-          // Continents: diverse realistic biomes
-          const landH = (h - sea) / (1 - sea);
-          const veg = fbm(nB, gx * 1.8, gy * 1.8, BASE * 1.8, 5);
-          const moisture = fbm(nC, gx * 1.2, gy * 1.2, BASE * 1.2, 4);
-          const isDesert = absLat >= 0.16 && absLat <= 0.44 && moisture < 0.52;
-
-          let r, g, b;
-          if (landH > 0.62) {
-            // Mountain ranges
-            if (landH > 0.82) {
-              r = 232; g = 240; b = 250; // Snow-capped peaks
-            } else {
-              r = 112; g = 104; b = 92;  // Craggy rock
-            }
-          } else if (landH < 0.038) {
-            // Sandy coastline
-            r = 192; g = 176; b = 138;
-          } else if (isDesert) {
-            // Sahara/Gobi ochre & golden desert sands
-            r = 198 + Math.round(veg * 22);
-            g = 148 + Math.round(veg * 18);
-            b = 88 + Math.round(veg * 16);
-          } else if (veg > 0.50) {
-            // Rainforest / lush woodland
-            r = 26 + Math.round(veg * 14);
-            g = 80 + Math.round(veg * 24);
-            b = 36 + Math.round(veg * 12);
-          } else {
-            // Grasslands & savannah
-            r = 78 + Math.round(veg * 30);
-            g = 108 + Math.round(veg * 26);
-            b = 54 + Math.round(veg * 16);
-          }
-
-          limg.data[idx]     = r;
-          limg.data[idx + 1] = g;
-          limg.data[idx + 2] = b;
-          limg.data[idx + 3] = 255;
-
-          // Land is matte (high roughness)
-          rimg.data[idx] = 225; rimg.data[idx + 1] = 225; rimg.data[idx + 2] = 225; rimg.data[idx + 3] = 255;
-
-          // City lights on habitable land
-          if (absLat < 0.76 && landH < 0.62 && !isDesert) {
-            const cityNoise = fbm(nD, gx * 4.8, gy * 4.8, BASE * 4.8, 3);
-            if (cityNoise > 0.63) {
-              const lum = Math.min(255, (cityNoise - 0.63) * 620);
-              nimg.data[idx]     = Math.min(255, Math.round(lum * 1.0));
-              nimg.data[idx + 1] = Math.min(255, Math.round(lum * 0.84));
-              nimg.data[idx + 2] = Math.min(255, Math.round(lum * 0.46));
-            }
-          }
+          r = or_; g = og; b = ob;
         }
 
-        // Swirling atmospheric clouds
-        const cloudNoise = fbm(nC, gx * 1.35 + Math.sin(gy * 2.2) * 0.28, gy * 1.35, BASE * 1.35, 5);
-        const swirl = Math.sin(gx * 2.2 + gy * 3.4 + cloudNoise * 3.2) * 0.12;
-        const cTotal = cloudNoise + swirl;
-        if (cTotal > 0.48) {
-          const cAlpha = Math.min(240, Math.round((cTotal - 0.48) * 440));
-          cimg.data[idx]     = 255;
-          cimg.data[idx + 1] = 255;
-          cimg.data[idx + 2] = 255;
-          cimg.data[idx + 3] = cAlpha;
-        } else {
-          cimg.data[idx + 3] = 0;
+        // ice caps
+        const ice = Math.max(0, (Math.abs(yy) - 0.80) / 0.20);
+        if (ice > 0) {
+          const t = Math.min(1, ice * 1.4);
+          r = r * (1 - t) + 236 * t;
+          g = g * (1 - t) + 242 * t;
+          b = b * (1 - t) + 250 * t;
         }
-      }
-    }
 
-    // Cratered Moon texture
-    for (let my = 0; my < 256; my++) {
-      const mlat = my / 256;
-      for (let mx = 0; mx < 512; mx++) {
-        const mu = mx / 512;
-        const mgx = mu * 8, mgy = mlat * 4;
-        let mh = fbm(nA, mgx, mgy, 8, 5);
-        const crat = fbm(nD, mgx * 2.5, mgy * 2.5, 16, 4);
-        let lum = 135 + (mh - 0.5) * 55;
-        if (crat > 0.68) lum += (crat - 0.68) * 220;
-        lum = Math.min(255, Math.max(45, Math.round(lum)));
-        const midx = (my * 512 + mx) * 4;
-        mimg.data[midx]     = lum;
-        mimg.data[midx + 1] = lum;
-        mimg.data[midx + 2] = Math.round(lum * 1.05);
-        mimg.data[midx + 3] = 255;
+        limg.data[i] = r; limg.data[i + 1] = g; limg.data[i + 2] = b; limg.data[i + 3] = 255;
+
+        // clouds: separate fbm, thinned at the poles
+        let c = fbm(nB, gx * 1.7 + 40, gy * 1.7, BASE * 1.7, 4);
+        c = Math.max(0, c * 1.7 - 0.62) * (1 - Math.abs(yy) * 0.45);
+        cimg.data[i] = 255; cimg.data[i + 1] = 255; cimg.data[i + 2] = 255;
+        cimg.data[i + 3] = Math.min(255, c * 420);
       }
     }
 
     lctx.putImageData(limg, 0, 0);
     cctx.putImageData(cimg, 0, 0);
-    nctx.putImageData(nimg, 0, 0);
-    rctx.putImageData(rimg, 0, 0);
-    mctx.putImageData(mimg, 0, 0);
 
-    const lt = new THREE.CanvasTexture(land); lt.colorSpace = THREE.SRGBColorSpace;
-    const ct = new THREE.CanvasTexture(cloud); ct.colorSpace = THREE.SRGBColorSpace;
-    const nt = new THREE.CanvasTexture(night); nt.colorSpace = THREE.SRGBColorSpace;
-    const rt = new THREE.CanvasTexture(rough);
-    const mt = new THREE.CanvasTexture(moonC); mt.colorSpace = THREE.SRGBColorSpace;
-
-    return { landTex: lt, cloudTex: ct, nightTex: nt, roughTex: rt, moonTex: mt };
+    const lt = new THREE.CanvasTexture(land);
+    const ct = new THREE.CanvasTexture(cloud);
+    lt.colorSpace = THREE.SRGBColorSpace;
+    lt.wrapS = ct.wrapS = THREE.RepeatWrapping;
+    return { landTex: lt, cloudTex: ct };
   }
 
-  const { landTex, cloudTex, nightTex, roughTex, moonTex } = earthTextures();
+  const { landTex, cloudTex } = earthTextures();
 
   /* Starfield */
   const STAR_COUNT = mobile ? 2600 : 7000;
@@ -4218,118 +4111,35 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   });
   scene.add(nebulaGroup);
 
-  /* Earth: High-Fidelity Photorealistic Planet with Specular Oceans, Night Lights & Atmosphere */
+  /* Earth */
   const home = new THREE.Group();
-
   const homeSurface = new THREE.Mesh(
+    // high segment count: at this radius the limb fills the screen, and a
+    // coarser sphere showed visible facets along the horizon
     new THREE.SphereGeometry(900, 192, 128),
     new THREE.MeshStandardMaterial({
-      map: landTex,
-      roughnessMap: roughTex,
-      roughness: 0.92,
-      metalness: 0.04,
-      emissiveMap: nightTex,
-      emissive: new THREE.Color(0xfff2d4),
-      emissiveIntensity: 0.85,
-      transparent: true,
-      opacity: 0
+      map: landTex, roughness: 0.92, metalness: 0.02,
+      transparent: true, opacity: 0
     })
   );
   home.add(homeSurface);
 
   const homeClouds = new THREE.Mesh(
-    new THREE.SphereGeometry(914, 128, 96),
+    new THREE.SphereGeometry(912, 128, 96),
     new THREE.MeshStandardMaterial({
-      map: cloudTex,
-      transparent: true,
-      opacity: 0,
-      roughness: 1,
-      metalness: 0,
-      depthWrite: false
+      map: cloudTex, transparent: true, opacity: 0,
+      roughness: 1, metalness: 0, depthWrite: false
     })
   );
   home.add(homeClouds);
 
-  /* Inner Horizon Atmosphere Rayleigh Limb Haze */
-  const innerAtmosMat = new THREE.ShaderMaterial({
-    uniforms: {
-      uOpacity: { value: 0 }
-    },
-    vertexShader: `
-      varying vec3 vNormal;
-      varying vec3 vPosition;
-      void main() {
-        vNormal = normalize(normalMatrix * normal);
-        vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vNormal;
-      varying vec3 vPosition;
-      uniform float uOpacity;
-      void main() {
-        vec3 viewDir = normalize(-vPosition);
-        float fresnel = 1.0 - max(0.0, dot(viewDir, vNormal));
-        float intensity = pow(fresnel, 3.4);
-        gl_FragColor = vec4(0.32, 0.70, 1.0, intensity * uOpacity * 0.85);
-      }
-    `,
-    blending: THREE.AdditiveBlending,
-    side: THREE.FrontSide,
-    transparent: true,
-    depthWrite: false
-  });
-  const innerAtmos = new THREE.Mesh(new THREE.SphereGeometry(905, 128, 96), innerAtmosMat);
-  home.add(innerAtmos);
-
-  /* Outer Atmosphere Scattering Halo */
-  const atmosMat = new THREE.ShaderMaterial({
-    uniforms: {
-      uOpacity: { value: 0 }
-    },
-    vertexShader: `
-      varying vec3 vNormal;
-      varying vec3 vPosition;
-      void main() {
-        vNormal = normalize(normalMatrix * normal);
-        vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vNormal;
-      varying vec3 vPosition;
-      uniform float uOpacity;
-      void main() {
-        vec3 viewDir = normalize(-vPosition);
-        float fresnel = 1.0 - max(0.0, dot(viewDir, vNormal));
-        float intensity = pow(fresnel, 2.7);
-        vec3 atmosColor = mix(vec3(0.18, 0.52, 1.0), vec3(0.65, 0.90, 1.0), intensity);
-        gl_FragColor = vec4(atmosColor, intensity * uOpacity * 1.5);
-      }
-    `,
-    blending: THREE.AdditiveBlending,
-    side: THREE.BackSide,
-    transparent: true,
-    depthWrite: false
-  });
-  const atmosMesh = new THREE.Mesh(new THREE.SphereGeometry(934, 128, 96), atmosMat);
-  home.add(atmosMesh);
-
   home.position.set(0, -1150, -700);
-  home.rotation.z = 0.41;
+  home.rotation.z = 0.41;          // axial tilt
   scene.add(home);
 
   const moon = new THREE.Mesh(
-    new THREE.SphereGeometry(58, 48, 36),
-    new THREE.MeshStandardMaterial({
-      map: moonTex,
-      roughness: 0.95,
-      metalness: 0.02,
-      transparent: true,
-      opacity: 0
-    })
+    new THREE.SphereGeometry(58, 32, 24),
+    new THREE.MeshStandardMaterial({ color: 0x9aa6bd, roughness: 1, metalness: 0, transparent: true, opacity: 0 })
   );
   scene.add(moon);
 
@@ -4973,14 +4783,10 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     /* ---- Earth ---- */
     const homeIn = (L < 0 ? 0 : sat(L, 0.35, 0.9)) * (1 - sat(p, 0.06, 0.34));
     homeSurface.material.opacity = homeIn;
-    homeClouds.material.opacity = homeIn * 0.90;
-    if (atmosMat) atmosMat.uniforms.uOpacity.value = homeIn;
-    if (innerAtmosMat) innerAtmosMat.uniforms.uOpacity.value = homeIn;
-    atmosMesh.visible = homeIn > 0.01;
-    innerAtmos.visible = homeIn > 0.01;
+    homeClouds.material.opacity = homeIn * 0.85;
     home.visible = homeIn > 0.01;
-    homeSurface.rotation.y += 0.00035;
-    homeClouds.rotation.y += 0.00052;
+    home.rotation.y += 0.00035;
+    homeClouds.rotation.y += 0.00012;      // clouds drift relative to the ground
     home.position.set(0, -1150 - p * 900, -700 + flyZ * 0.35);
 
     const ma = time * 0.06;
