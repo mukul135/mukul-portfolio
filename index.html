@@ -1539,6 +1539,204 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     .hero-pin { height: auto; }
     .hero-stage { position: relative; height: auto; padding: 6rem 0; }
 }
+
+.me_pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    filter: contrast(1.05) saturate(1.02) brightness(1.0);
+}
+
+/* Dossier & Resume Download Actions */
+.dossier-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+.btn-dossier {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 100px;
+    background: var(--accent);
+    color: #060a16;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.35s var(--ease-out);
+    box-shadow: 0 0 20px rgba(143, 202, 255, 0.35);
+}
+.btn-dossier:hover {
+    background: #fff;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.65);
+    transform: translateY(-2px);
+}
+.btn-dossier svg { width: 15px; height: 15px; }
+.btn-meta {
+    font-size: 0.58rem;
+    opacity: 0.75;
+    padding-left: 0.4rem;
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+}
+.btn-dossier-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 100px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.35s var(--ease-out);
+}
+.btn-dossier-ghost:hover {
+    border-color: var(--accent);
+    color: #fff;
+    background: rgba(143, 202, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+/* Dedicated Resume Section */
+.dossier-card {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background:
+        linear-gradient(180deg, rgba(143, 202, 255, 0.04), transparent 50%),
+        rgba(5, 8, 18, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: clamp(2rem, 4.5vw, 3.5rem);
+}
+.dossier-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+}
+.dossier-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+}
+.dossier-name {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    margin: 0 0 0.4rem;
+    color: var(--ink-00);
+}
+.dossier-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-soft);
+    margin: 0 0 1.2rem;
+}
+.dossier-desc {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--fg);
+    margin: 0 0 1.6rem;
+}
+.dossier-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+.dossier-tags span {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(143, 202, 255, 0.25);
+    background: rgba(143, 202, 255, 0.04);
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+}
+.dossier-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: stretch;
+}
+.btn-dossier-large {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 1.8rem;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #050a16;
+    text-decoration: none;
+    transition: all 0.35s var(--ease-out);
+    box-shadow: 0 0 30px rgba(143, 202, 255, 0.35);
+}
+.btn-dossier-large:hover {
+    background: #fff;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+}
+.btn-large-title {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+.btn-large-sub {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+    margin-top: 0.2rem;
+}
+.btn-dossier-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1rem 1.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.35s var(--ease-out);
+}
+.btn-dossier-view:hover {
+    border-color: var(--accent);
+    color: #fff;
+    background: rgba(143, 202, 255, 0.1);
+    transform: translateY(-2px);
+}
+@media (max-width: 800px) {
+    .dossier-grid { grid-template-columns: 1fr; }
+}
+
   </style>
 </head>
 
@@ -1578,6 +1776,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
         <li><a href="#certifications">Certifications</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#education">Education</a></li>
+        <li><a href="#resume">Resume</a></li>
       </ul>
     </nav>
   </header>
@@ -1639,46 +1838,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
             </svg>
             <div class="porthole" id="porthole">
               <div class="porthole-glass">
-                <!-- High-tech astronaut/engineer cybernetic emblem -->
-                <svg class="porthole-svg-avatar" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="helmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#1e293b"/>
-                      <stop offset="50%" stop-color="#0f172a"/>
-                      <stop offset="100%" stop-color="#020617"/>
-                    </linearGradient>
-                    <linearGradient id="visorGrad" x1="0%" y1="20%" x2="100%" y2="80%">
-                      <stop offset="0%" stop-color="#38bdf8"/>
-                      <stop offset="45%" stop-color="#3b82f6"/>
-                      <stop offset="100%" stop-color="#1d4ed8"/>
-                    </linearGradient>
-                    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="#8fcaff"/>
-                      <stop offset="100%" stop-color="#55efc4"/>
-                    </linearGradient>
-                  </defs>
-                  <!-- Background starry circle -->
-                  <circle cx="100" cy="100" r="95" fill="#040814"/>
-                  <!-- Subtle grid in background -->
-                  <path d="M40 100 H160 M100 40 V160" stroke="rgba(143,202,255,0.15)" stroke-width="1" stroke-dasharray="4 4"/>
-                  <circle cx="100" cy="100" r="60" stroke="rgba(143,202,255,0.1)" stroke-width="1"/>
-                  <!-- Astronaut shoulders -->
-                  <path d="M45 190 Q100 145 155 190" fill="url(#helmGrad)" stroke="#334155" stroke-width="2.5"/>
-                  <path d="M72 165 L100 178 L128 165" stroke="url(#accentGlow)" stroke-width="2" fill="none"/>
-                  <!-- Helmet -->
-                  <ellipse cx="100" cy="98" rx="52" ry="56" fill="url(#helmGrad)" stroke="#475569" stroke-width="2.5"/>
-                  <!-- Visor -->
-                  <ellipse cx="100" cy="95" rx="40" ry="32" fill="url(#visorGrad)" stroke="#60a5fa" stroke-width="1.8"/>
-                  <!-- Visor reflection/glare -->
-                  <path d="M75 80 Q100 70 120 78 Q100 86 75 80 Z" fill="rgba(255,255,255,0.5)"/>
-                  <ellipse cx="84" cy="88" rx="8" ry="4" fill="rgba(255,255,255,0.6)" transform="rotate(-15 84 88)"/>
-                  <!-- HUD overlay inside visor -->
-                  <line x1="82" y1="105" x2="118" y2="105" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-                  <line x1="90" y1="110" x2="110" y2="110" stroke="#55efc4" stroke-width="1.5"/>
-                  <!-- Telemetry markings -->
-                  <text x="100" y="145" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#8fcaff" letter-spacing="2">MUKUL · DEV</text>
-                  <circle cx="100" cy="36" r="3" fill="#4ade80"/>
-                </svg>
+                <img src="img/mukul.jpg" alt="Mukul Barhate" class="me_pic">
               </div>
               <span class="porthole-sweep" aria-hidden="true"></span>
             </div>
@@ -1718,6 +1878,14 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
               <span class="record-key">Objective</span><span class="record-sep">:</span>
               <span class="record-val highlight">Seeking AI/ML &amp; Full-Stack Internships</span>
             </div>
+            <div class="record-row">
+              <span class="record-key">Interests</span><span class="record-sep">:</span>
+              <span class="record-val">Bike riding, Fitness, Travelling, Cricket</span>
+            </div>
+            <div class="record-row">
+              <span class="record-key">Languages</span><span class="record-sep">:</span>
+              <span class="record-val">English (Fluent), Hindi, Marathi</span>
+            </div>
           </div>
 
           <div class="social-card reveal" data-delay="3">
@@ -1741,6 +1909,21 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
               <svg class="stroked" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
+            </a>
+          </div>
+
+          <div class="dossier-actions reveal" data-delay="3">
+            <a href="resume.pdf" download="Mukul_Barhate_Resume.pdf" class="btn-dossier" id="btn-quick-resume">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Resume</span>
+              <span class="btn-meta">PDF &middot; 78 KB</span>
+            </a>
+            <a href="resume.pdf" target="_blank" rel="noopener" class="btn-dossier-ghost">
+              <span>View Dossier</span> <i>&#8599;</i>
             </a>
           </div>
         </div>
@@ -1799,46 +1982,46 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
           </div>
         </a>
 
-        <!-- Project 4: VisionPulse CV -->
-        <a class="planet-card reveal" href="https://github.com/mukul135" target="_blank" rel="noopener"
+        <!-- Project 4: FitZone Android App -->
+        <a class="planet-card reveal" href="https://github.com/mukul135/FitZone-Android" target="_blank" rel="noopener"
+           style="--glow:rgba(0,206,201,.5); --size:152px; --fallback:#00b894; --ring:#81ecec">
+          <div class="planet-slot" data-world="p-fitzoneapp"></div>
+          <p class="planet-name">FitZone Android</p>
+          <span class="planet-stack">Android (Java) &middot; SQLite &middot; Fitness Tracking</span>
+          <div class="planet-info">
+            <span class="planet-drop"></span><span class="planet-rule"></span>
+            <div class="planet-readout">
+              <p class="planet-desc">Native Android fitness tracking mobile application featuring custom workout routine builders, telemetry metrics, and user goal analytics.</p>
+              <span class="planet-cta">View repository</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Project 5: FitZone Web & Backend -->
+        <a class="planet-card reveal" data-delay="1" href="https://github.com/mukul135/Fitzone" target="_blank" rel="noopener"
+           style="--glow:rgba(225,112,85,.5); --size:156px; --fallback:#d63031; --ring:#fab1a0">
+          <div class="planet-slot" data-world="p-fitzoneweb"></div>
+          <p class="planet-name">FitZone Core Web</p>
+          <span class="planet-stack">Python &middot; Flask &middot; MySQL &middot; REST APIs</span>
+          <div class="planet-info">
+            <span class="planet-drop"></span><span class="planet-rule"></span>
+            <div class="planet-readout">
+              <p class="planet-desc">Comprehensive fitness &amp; gym management platform built with Flask REST APIs, MySQL relational storage, member management, and nutrition logging.</p>
+              <span class="planet-cta">View repository</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Project 6: VisionPulse CV & AI Core -->
+        <a class="planet-card reveal" data-delay="2" href="https://github.com/mukul135" target="_blank" rel="noopener"
            style="--glow:rgba(52,152,219,.5); --size:145px; --fallback:#2980b9; --ring:#70a1ff">
           <div class="planet-slot" data-world="p-vision"></div>
           <p class="planet-name">VisionPulse CV</p>
-          <span class="planet-stack">OpenCV &middot; MediaPipe &middot; YOLOv8</span>
+          <span class="planet-stack">OpenCV &middot; MediaPipe &middot; YOLOv8 &middot; spaCy</span>
           <div class="planet-info">
             <span class="planet-drop"></span><span class="planet-rule"></span>
             <div class="planet-readout">
-              <p class="planet-desc">Real-time computer vision pipeline for facial landmark tracking, spatial gesture recognition, and interactive video analytics.</p>
-              <span class="planet-cta">Explore modules</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- Project 5: DocuIntel NLP -->
-        <a class="planet-card reveal" data-delay="1" href="https://github.com/mukul135" target="_blank" rel="noopener"
-           style="--glow:rgba(241,196,15,.45); --size:152px; --fallback:#b7950b; --ring:#ffeaa7">
-          <div class="planet-slot" data-world="p-docu"></div>
-          <p class="planet-name">DocuIntel NLP</p>
-          <span class="planet-stack">spaCy &middot; Hugging Face &middot; Tesseract</span>
-          <div class="planet-info">
-            <span class="planet-drop"></span><span class="planet-rule"></span>
-            <div class="planet-readout">
-              <p class="planet-desc">High-throughput NLP text processing framework extracting structured entities, keyphrases, and multi-document abstractive summaries.</p>
-              <span class="planet-cta">Explore modules</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- Project 6: PyGateway API -->
-        <a class="planet-card reveal" data-delay="2" href="https://github.com/mukul135" target="_blank" rel="noopener"
-           style="--glow:rgba(108,92,231,.5); --size:148px; --fallback:#4834d4; --ring:#a29bfe">
-          <div class="planet-slot" data-world="p-gateway"></div>
-          <p class="planet-name">PyGateway API</p>
-          <span class="planet-stack">Flask REST &middot; JWT &middot; MySQL &middot; Docker</span>
-          <div class="planet-info">
-            <span class="planet-drop"></span><span class="planet-rule"></span>
-            <div class="planet-readout">
-              <p class="planet-desc">Microservices architecture featuring token authentication, rate limiting, connection pooling, and resilient containerization.</p>
+              <p class="planet-desc">Computer vision and NLP research engines featuring facial landmark tracking, spatial gesture recognition, and automated document intelligence.</p>
               <span class="planet-cta">Explore modules</span>
             </div>
           </div>
@@ -2042,6 +2225,51 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
           <button class="const-arrow" id="const-next" aria-label="Next constellation">&#8594;</button>
         </div>
         <div class="const-dots" id="const-dots"></div>
+      </div>
+    </section>
+
+    <!-- ============ RESUME / FLIGHT DOSSIER ============ -->
+    <section class="section" id="resume">
+      <p class="eyebrow reveal" data-delay="1">Official Credentials &middot; PDF Download</p>
+      <h2 class="section-title reveal" data-delay="1">Curriculum <em>Vitae</em></h2>
+
+      <div class="dossier-card reveal" data-delay="2">
+        <div class="dossier-grid">
+          <div class="dossier-left">
+            <span class="dossier-badge">Verified Applicant &middot; Diploma Engineer</span>
+            <h3 class="dossier-name">Mukul Barhate</h3>
+            <p class="dossier-subtitle">Python Developer &middot; AI/ML &middot; Full-Stack Builder</p>
+            <p class="dossier-desc">
+              Complete single-page technical resume detailing academic aggregate (95.60% at Government Polytechnic, Pune), 5 real-world GitHub projects (MediSuite AI, RoadGuard, Outfit Studio, FitZone Android, FitZone Web), 6 verified industry certifications (AWS, IBM, Anthropic, Udemy), and technical proficiencies.
+            </p>
+            <div class="dossier-tags">
+              <span>Single-Page PDF</span>
+              <span>ATS-Optimized</span>
+              <span>Updated 2026</span>
+              <span>78 KB</span>
+            </div>
+          </div>
+          <div class="dossier-right">
+            <a href="resume.pdf" download="Mukul_Barhate_Resume.pdf" class="btn-dossier-large" id="btn-dossier-download">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <div>
+                <span class="btn-large-title">Download Resume</span>
+                <span class="btn-large-sub">Official PDF &middot; 78 KB</span>
+              </div>
+            </a>
+            <a href="resume.pdf" target="_blank" rel="noopener" class="btn-dossier-view">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>Preview in Browser</span>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -3365,6 +3593,24 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
       storm: { x: 0.32, y: 0.44, r: 105, hot: 'rgba(255,210,255,0.95)', cool: 'rgba(142,68,173,0.75)' },
       tilt: 0.28,
       moon: { color: '#e056fd', size: 0.2, dist: 1.9 }
+    },
+    // 4: FitZone Android App: Electric mint, cyan, athletic neon
+    fitzoneapp: {
+      base: ['#00b894', '#00cec9', '#0984e3', '#053e32', '#81ecec'],
+      mottleColors: ['rgba(0,206,201,0.55)', 'rgba(85,239,196,0.5)', 'rgba(235,250,250,0.4)'],
+      mottle: 26, craters: 18, rim: 'rgba(129,236,236,0.8)',
+      caps: 'rgba(235,250,250,0.92)', tilt: 0.24,
+      moon: { color: '#55efc4', size: 0.2, dist: 1.8 }
+    },
+    // 5: FitZone Web & Backend: Dynamic cobalt, solar amber, workout flame
+    fitzoneweb: {
+      base: ['#e17055', '#d63031', '#2d3436', '#0984e3', '#fab1a0'],
+      mottleColors: ['rgba(225,112,85,0.6)', 'rgba(214,48,49,0.5)', 'rgba(254,240,235,0.4)'],
+      mottle: 28, craters: 24, rim: 'rgba(250,177,160,0.75)',
+      bands: { count: 16, colors: ['rgba(225,112,85,0.4)', 'rgba(9,132,227,0.4)'] },
+      storm: { x: 0.38, y: 0.48, r: 100, hot: 'rgba(255,200,180,0.95)', cool: 'rgba(214,48,49,0.75)' },
+      tilt: -0.28,
+      moon: { color: '#fab1a0', size: 0.19, dist: 1.75 }
     },
     // 4: VisionPulse CV: Optical ice-blue, digital sapphire
     vision: {
