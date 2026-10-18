@@ -489,28 +489,6 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
 }
 .hero-name.lit ~ .hero-lead { opacity: 1; }
 
-.hero-telemetry {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 1.8rem;
-    opacity: 0;
-    transition: opacity 1s ease 1.1s;
-}
-.hero-name.lit ~ .hero-telemetry { opacity: 1; }
-
-.hero-chip {
-    font-family: var(--font-mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(143, 202, 255, 0.04);
-    padding: 0.35rem 0.85rem;
-    border-radius: 4px;
-}
-
 .scroll-cue {
     position: absolute;
     bottom: 2.4rem;
@@ -521,23 +499,24 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     align-items: center;
     gap: 0.7rem;
     font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.3em;
+    font-size: var(--t-micro);
+    letter-spacing: var(--track-label);
     text-transform: uppercase;
-    color: var(--fg-faint);
-    opacity: calc(1 - var(--hero-out, 0) * 2);
+    color: var(--ink-60);
+    opacity: 0;
+    transition: opacity 0.8s ease 1.1s;
 }
+.hero-name.lit ~ .scroll-cue { opacity: 1; }
 .scroll-cue i {
-    display: block;
-    width: 1px; height: 44px;
-    background: linear-gradient(180deg, currentColor, transparent);
-    animation: cueFall 2.1s ease-in-out infinite;
+    width: 1px;
+    height: 38px;
+    background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+    animation: cueDrop 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
-
-@keyframes cueFall {
+@keyframes cueDrop {
     0%   { transform: scaleY(0); transform-origin: top; }
-    45%  { transform: scaleY(1); transform-origin: top; }
-    55%  { transform: scaleY(1); transform-origin: bottom; }
+    50%  { transform: scaleY(1); transform-origin: top; }
+    50.1%{ transform: scaleY(1); transform-origin: bottom; }
     100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
@@ -1609,132 +1588,349 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     transform: translateY(-2px);
 }
 
-/* Dedicated Resume Section */
-.dossier-card {
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    background:
-        linear-gradient(180deg, rgba(143, 202, 255, 0.04), transparent 50%),
-        rgba(5, 8, 18, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: clamp(2rem, 4.5vw, 3.5rem);
+/* =========================================================
+   Resume Section & Interactive Document Viewer
+   ========================================================= */
+
+.resume-section-wrap {
+    margin-top: 2rem;
+    position: relative;
 }
-.dossier-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: clamp(2rem, 4vw, 4rem);
+
+.resume-toolbar {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.9rem 1.4rem;
+    margin-bottom: 1.5rem;
+    background: rgba(16, 28, 61, 0.45);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
 }
-.dossier-badge {
-    display: inline-block;
+
+.resume-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.resume-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     font-family: var(--font-mono);
-    font-size: var(--t-micro);
-    letter-spacing: var(--track-label);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 0.8rem;
 }
-.dossier-name {
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    margin: 0 0 0.4rem;
-    color: var(--ink-00);
+.resume-status-badge i {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
 }
-.dossier-subtitle {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+
+.resume-view-toggles {
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 3px;
+    gap: 3px;
+}
+.resume-tab-btn {
+    border: none;
+    background: transparent;
     color: var(--fg-soft);
-    margin: 0 0 1.2rem;
-}
-.dossier-desc {
-    font-size: 0.95rem;
-    line-height: 1.65;
-    color: var(--fg);
-    margin: 0 0 1.6rem;
-}
-.dossier-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-}
-.dossier-tags span {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.resume-tab-btn.active {
+    background: var(--accent);
+    color: #050814;
+    font-weight: 600;
+}
+
+.resume-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn-resume-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(143, 202, 255, 0.25);
-    background: rgba(143, 202, 255, 0.04);
-    padding: 0.3rem 0.7rem;
-    border-radius: 4px;
+    padding: 0.52rem 1.05rem;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
 }
-.dossier-right {
+.btn-resume-primary {
+    background: var(--accent);
+    color: #060a16;
+    font-weight: 600;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 16px rgba(143, 202, 255, 0.28);
+}
+.btn-resume-primary:hover {
+    background: #ffffff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.65);
+    transform: translateY(-1px);
+}
+.btn-resume-ghost {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--fg);
+    border: 1px solid var(--line-strong);
+}
+.btn-resume-ghost:hover {
+    border-color: var(--accent);
+    color: #ffffff;
+    background: rgba(143, 202, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+/* The Authentic Document Sheet */
+.resume-paper-container {
+    background: #cbd5e1;
+    padding: clamp(0.75rem, 2.5vw, 2.2rem);
+    border-radius: 8px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.resume-sheet {
+    background: #ffffff;
+    color: #1a202c;
+    width: 100%;
+    max-width: 860px;
+    min-width: 300px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    overflow: hidden;
+    font-family: var(--font-body);
+}
+
+.resume-navy-banner {
+    background: #111e38;
+    background: linear-gradient(135deg, #0e1a32 0%, #172a50 100%);
+    color: #ffffff;
+    padding: clamp(1.8rem, 3.5vw, 2.6rem) clamp(1.6rem, 3.5vw, 2.8rem) clamp(1.4rem, 3vw, 2rem);
+    border-bottom: 3px solid #2b4c7e;
+}
+
+.resume-banner-name {
+    font-family: var(--font-body);
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+    color: #ffffff;
+    line-height: 1.1;
+}
+
+.resume-banner-role {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    font-weight: 500;
+    color: #8fcaff;
+    margin: 0.4rem 0 0.8rem;
+    letter-spacing: 0.02em;
+}
+
+.resume-banner-meta {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    align-items: stretch;
+    gap: 0.35rem;
+    font-family: var(--font-body);
+    font-size: 0.84rem;
+    color: #cbd5e1;
 }
-.btn-dossier-large {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    padding: 1.2rem 1.8rem;
-    border-radius: 8px;
-    background: var(--accent);
-    color: #050a16;
+.resume-banner-meta a {
+    color: #93c5fd;
     text-decoration: none;
-    transition: all 0.35s var(--ease-out);
-    box-shadow: 0 0 30px rgba(143, 202, 255, 0.35);
+    transition: color 0.15s;
 }
-.btn-dossier-large:hover {
-    background: #fff;
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.7);
-    transform: translateY(-2px);
+.resume-banner-meta a:hover {
+    color: #ffffff;
+    text-decoration: underline;
 }
-.btn-large-title {
-    display: block;
-    font-family: var(--font-mono);
+
+.resume-sheet-content {
+    padding: clamp(1.6rem, 3.5vw, 2.8rem);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #1e293b;
+}
+
+.r-sec-heading {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #0f172a;
+    border-bottom: 1.5px solid #0f172a;
+    padding-bottom: 0.25rem;
+    margin: 1.4rem 0 0.75rem;
+}
+.r-sec-heading:first-child { margin-top: 0; }
+
+.r-summary-text {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #334155;
+    margin: 0;
+}
+
+.r-skills-grid {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 0.45rem 1rem;
     font-size: 0.86rem;
+    align-items: baseline;
+}
+.r-skill-label {
     font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: #0f172a;
 }
-.btn-large-sub {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    opacity: 0.8;
-    margin-top: 0.2rem;
+.r-skill-val {
+    color: #334155;
 }
-.btn-dossier-view {
+
+.r-project-item {
+    margin-bottom: 1.15rem;
+}
+.r-project-item:last-child { margin-bottom: 0; }
+.r-project-header {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.7rem;
-    padding: 1rem 1.6rem;
-    border-radius: 8px;
-    border: 1px solid var(--line-strong);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--fg);
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.8rem;
+}
+.r-project-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+.r-project-badge {
+    font-size: 0.76rem;
+    color: #64748b;
+    font-style: italic;
+}
+.r-project-stack {
+    font-size: 0.82rem;
+    color: #2563eb;
+    font-weight: 500;
+    margin: 0.15rem 0 0.35rem;
+}
+.r-project-bullets {
+    margin: 0.35rem 0 0.4rem 1.25rem;
+    padding: 0;
+    font-size: 0.86rem;
+    color: #334155;
+    line-height: 1.5;
+}
+.r-project-bullets li {
+    margin-bottom: 0.25rem;
+}
+.r-project-link {
+    font-size: 0.82rem;
+    color: #1d4ed8;
     text-decoration: none;
-    transition: all 0.35s var(--ease-out);
+    font-family: var(--font-mono);
 }
-.btn-dossier-view:hover {
-    border-color: var(--accent);
-    color: #fff;
-    background: rgba(143, 202, 255, 0.1);
-    transform: translateY(-2px);
+.r-project-link:hover { text-decoration: underline; }
+
+.r-edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.88rem;
+    margin-bottom: 0.45rem;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
 }
-@media (max-width: 800px) {
-    .dossier-grid { grid-template-columns: 1fr; }
+.r-edu-inst { font-weight: 700; color: #0f172a; }
+.r-edu-meta { font-weight: 600; color: #1e40af; }
+
+.r-cert-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem 1.6rem;
+}
+.r-cert-item {
+    font-size: 0.86rem;
+}
+.r-cert-title {
+    font-weight: 700;
+    color: #0f172a;
+    display: block;
+}
+.r-cert-issuer {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.r-lang-text {
+    font-size: 0.86rem;
+    color: #334155;
+    margin: 0;
+}
+
+/* PDF iframe container */
+.resume-pdf-container {
+    width: 100%;
+    height: 850px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #111827;
+}
+.resume-pdf-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 640px) {
+    .r-skills-grid { grid-template-columns: 1fr; gap: 0.2rem; }
+    .r-cert-grid { grid-template-columns: 1fr; }
+    .resume-toolbar { flex-direction: column; align-items: stretch; }
+    .resume-toolbar-actions { justify-content: flex-start; }
+}
+
+@media print {
+    body * { visibility: hidden; }
+    .resume-sheet, .resume-sheet * { visibility: visible; }
+    .resume-sheet {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+    }
 }
 
   </style>
@@ -1787,7 +1983,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     <section class="hero-pin" id="hero-pin">
       <div class="hero-stage">
         <div class="hero-inner">
-          <div class="hero-tag"><i></i>Python Developer &middot; AI/ML &middot; Full-Stack</div>
+          <div class="hero-tag"><i></i>Personal portfolio</div>
 
           <div class="hero-name-wrap" id="hero-name-wrap">
             <h1 class="hero-name" id="hero-name" data-text="Mukul Barhate"></h1>
@@ -1815,13 +2011,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
             </div>
           </div>
 
-          <p class="hero-lead">Government Polytechnic, Pune &middot; 95.60% Aggregate &middot; AI/ML &amp; Full-Stack Builder</p>
-
-          <div class="hero-telemetry">
-            <span class="hero-chip">95.60% Academic Aggregate</span>
-            <span class="hero-chip">3+ Flagship AI Applications</span>
-            <span class="hero-chip">6 Industry Certifications</span>
-          </div>
+          <p class="hero-lead">Python Developer &middot; AI/ML &amp; Full-Stack &middot; 95.60% Aggregate</p>
 
         </div>
         <div class="scroll-cue"><span>Scroll</span><i></i></div>
@@ -1922,8 +2112,8 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
               <span>Download Resume</span>
               <span class="btn-meta">PDF &middot; 78 KB</span>
             </a>
-            <a href="resume.pdf" target="_blank" rel="noopener" class="btn-dossier-ghost">
-              <span>View Dossier</span> <i>&#8599;</i>
+            <a href="#resume" class="btn-dossier-ghost">
+              <span>View Full Resume</span> <i>&darr;</i>
             </a>
           </div>
         </div>
@@ -2228,47 +2418,199 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
       </div>
     </section>
 
-    <!-- ============ RESUME / FLIGHT DOSSIER ============ -->
+    <!-- ============ RESUME / IN-PAGE CURRICULUM VITAE ============ -->
     <section class="section" id="resume">
-      <p class="eyebrow reveal" data-delay="1">Official Credentials &middot; PDF Download</p>
+      <p class="eyebrow reveal" data-delay="1">Official Resume &middot; ATS-Optimized Technical Dossier</p>
       <h2 class="section-title reveal" data-delay="1">Curriculum <em>Vitae</em></h2>
 
-      <div class="dossier-card reveal" data-delay="2">
-        <div class="dossier-grid">
-          <div class="dossier-left">
-            <span class="dossier-badge">Verified Applicant &middot; Diploma Engineer</span>
-            <h3 class="dossier-name">Mukul Barhate</h3>
-            <p class="dossier-subtitle">Python Developer &middot; AI/ML &middot; Full-Stack Builder</p>
-            <p class="dossier-desc">
-              Complete single-page technical resume detailing academic aggregate (95.60% at Government Polytechnic, Pune), 5 real-world GitHub projects (MediSuite AI, RoadGuard, Outfit Studio, FitZone Android, FitZone Web), 6 verified industry certifications (AWS, IBM, Anthropic, Udemy), and technical proficiencies.
-            </p>
-            <div class="dossier-tags">
-              <span>Single-Page PDF</span>
-              <span>ATS-Optimized</span>
-              <span>Updated 2026</span>
-              <span>78 KB</span>
+      <div class="resume-section-wrap reveal" data-delay="2">
+        <!-- Resume Actions & View Switcher Bar -->
+        <div class="resume-toolbar">
+          <div class="resume-toolbar-left">
+            <span class="resume-status-badge"><i></i>Verified Candidate &bull; Open for Internships</span>
+            <div class="resume-view-toggles">
+              <button class="resume-tab-btn active" id="tab-sheet-btn" onclick="showResumeTab('sheet')">Document View</button>
+              <button class="resume-tab-btn" id="tab-pdf-btn" onclick="showResumeTab('pdf')">Live PDF View</button>
             </div>
           </div>
-          <div class="dossier-right">
-            <a href="resume.pdf" download="Mukul_Barhate_Resume.pdf" class="btn-dossier-large" id="btn-dossier-download">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="resume-toolbar-actions">
+            <a href="resume.pdf" download="Mukul_Barhate_Resume.pdf" class="btn-resume-action btn-resume-primary" id="btn-download-resume">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              <div>
-                <span class="btn-large-title">Download Resume</span>
-                <span class="btn-large-sub">Official PDF &middot; 78 KB</span>
-              </div>
+              <span>Download PDF</span>
             </a>
-            <a href="resume.pdf" target="_blank" rel="noopener" class="btn-dossier-view">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
+            <a href="resume.pdf" target="_blank" rel="noopener" class="btn-resume-action btn-resume-ghost">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
               </svg>
-              <span>Preview in Browser</span>
+              <span>New Window</span>
             </a>
+            <button onclick="window.print()" class="btn-resume-action btn-resume-ghost" title="Print Resume">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              <span>Print</span>
+            </button>
           </div>
+        </div>
+
+        <!-- Sheet 1: Exact Render of Mukul's Uploaded Resume (Navy Banner + White ATS Layout) -->
+        <div id="resume-sheet-view" class="resume-paper-container">
+          <article class="resume-sheet" aria-label="Mukul Barhate Curriculum Vitae">
+            <!-- Dark Navy ATS Banner matching screenshot -->
+            <header class="resume-navy-banner">
+              <h1 class="resume-banner-name">MUKUL BARHATE</h1>
+              <p class="resume-banner-role">Python Developer | AI/ML &amp; Full-Stack</p>
+              <div class="resume-banner-meta">
+                <div>Pune, Maharashtra &bull; +91 8626068010 &bull; <a href="mailto:mukulbarhate09@gmail.com">mukulbarhate09@gmail.com</a></div>
+                <div><a href="https://linkedin.com/in/mukul-barhate-23857139b" target="_blank" rel="noopener">linkedin.com/in/mukul-barhate-23857139b</a> &bull; <a href="https://github.com/mukul135" target="_blank" rel="noopener">github.com/mukul135</a></div>
+              </div>
+            </header>
+
+            <!-- White Document Sheet Body matching screenshot -->
+            <div class="resume-sheet-content">
+              <div class="r-sec-heading">PROFESSIONAL SUMMARY</div>
+              <p class="r-summary-text">
+                Final-year Computer Engineering diploma student at Government Polytechnic, Pune, with a 95.60% academic score. I enjoy building practical applications with Python, Flask, databases, OCR, NLP and computer vision, and I am looking for an internship or entry-level role where I can keep learning and contribute to real projects.
+              </p>
+
+              <div class="r-sec-heading">TECHNICAL SKILLS</div>
+              <div class="r-skills-grid">
+                <div class="r-skill-label">Programming</div>
+                <div class="r-skill-val">Python, Java, C, C++, SQL, HTML5, CSS3</div>
+
+                <div class="r-skill-label">Backend &amp; App</div>
+                <div class="r-skill-val">Flask, REST APIs, Jinja2, Android (Java/XML)</div>
+
+                <div class="r-skill-label">AI/ML &amp; Vision</div>
+                <div class="r-skill-val">scikit-learn, spaCy, OpenCV, MediaPipe, YOLOv8, Tesseract OCR, Hugging Face, Gemini API</div>
+
+                <div class="r-skill-label">Databases &amp; Tools</div>
+                <div class="r-skill-val">MySQL, Oracle, Firebase (Firestore/Auth), Git, GitHub</div>
+              </div>
+
+              <div class="r-sec-heading">SELECTED PROJECTS</div>
+              
+              <div class="r-project-item">
+                <div class="r-project-header">
+                  <span class="r-project-title">MediSuite AI Agent</span>
+                </div>
+                <div class="r-project-stack">Python &bull; Flask &bull; MySQL &bull; Tesseract OCR &bull; spaCy &bull; scikit-learn</div>
+                <ul class="r-project-bullets">
+                  <li>Built an insurance-claim workflow that extracts details from scanned documents using OCR and processes claims through a multi-stage review.</li>
+                  <li>Trained a Logistic Regression claim model (92% accuracy, 98.4% ROC-AUC) with fraud checks, secure login, claim history and report summarization.</li>
+                </ul>
+                <a href="https://github.com/mukul135/MediSuite-AI-Agent" target="_blank" rel="noopener" class="r-project-link">github.com/mukul135/MediSuite-AI-Agent</a>
+              </div>
+
+              <div class="r-project-item">
+                <div class="r-project-header">
+                  <span class="r-project-title">RoadGuard – AI Pothole Detection &amp; Rewards</span>
+                  <span class="r-project-badge">Team project</span>
+                </div>
+                <div class="r-project-stack">Flask &bull; Python &bull; YOLOv8 &bull; Firebase &bull; Docker &bull; React/TypeScript</div>
+                <ul class="r-project-bullets">
+                  <li>Built Flask REST API endpoints for pothole reports, duplicate checks, suspicious-report review and request rate limiting.</li>
+                  <li>Connected Firebase Authentication and security rules, and helped containerize the app with Docker.</li>
+                </ul>
+                <a href="https://github.com/ishanagnihotri2009-a11y/RoadGuard" target="_blank" rel="noopener" class="r-project-link">github.com/ishanagnihotri2009-a11y/RoadGuard</a>
+              </div>
+
+              <div class="r-project-item">
+                <div class="r-project-header">
+                  <span class="r-project-title">Outfit Studio – AI Personal Styling App</span>
+                  <span class="r-project-badge">Team capstone</span>
+                </div>
+                <div class="r-project-stack">Android (Java/XML) &bull; Flask REST API &bull; MySQL &bull; Gemini API</div>
+                <ul class="r-project-bullets">
+                  <li>Developed JWT-secured registration and login, selfie-based skin-tone analysis and personalized color palettes.</li>
+                  <li>Added an AI digital wardrobe, occasion-based outfit generation with compatibility scores, weather-aware suggestions and 2D virtual try-on.</li>
+                </ul>
+                <a href="https://github.com/bhaveshc21/NEW-Outfit-Studio" target="_blank" rel="noopener" class="r-project-link">github.com/bhaveshc21/NEW-Outfit-Studio</a>
+              </div>
+
+              <div class="r-project-item">
+                <div class="r-project-header">
+                  <span class="r-project-title">FitZone – Android Native Gym Tracker</span>
+                  <span class="r-project-badge">Featured Repository</span>
+                </div>
+                <div class="r-project-stack">Android (Java/XML) &bull; SQLite &bull; Material Design UI</div>
+                <ul class="r-project-bullets">
+                  <li>Designed native Android architecture for logging daily exercise routines, sets, reps, and custom workout splits.</li>
+                  <li>Implemented local SQLite storage for zero-latency offline usage and calculated volume progression metrics.</li>
+                </ul>
+                <a href="https://github.com/mukul135/FitZone-Android" target="_blank" rel="noopener" class="r-project-link">github.com/mukul135/FitZone-Android</a>
+              </div>
+
+              <div class="r-project-item">
+                <div class="r-project-header">
+                  <span class="r-project-title">FitZone – Web Fitness Tracking Platform</span>
+                  <span class="r-project-badge">Featured Repository</span>
+                </div>
+                <div class="r-project-stack">Python &bull; Flask &bull; MySQL &bull; REST API &bull; Jinja2</div>
+                <ul class="r-project-bullets">
+                  <li>Engineered full-stack responsive web application with session-based authentication, workout schedules, and progress tracking.</li>
+                  <li>Built relational MySQL database schema for normalized user accounts, exercise libraries, and history logs.</li>
+                </ul>
+                <a href="https://github.com/mukul135/Fitzone" target="_blank" rel="noopener" class="r-project-link">github.com/mukul135/Fitzone</a>
+              </div>
+
+              <div class="r-sec-heading">EDUCATION</div>
+              <div class="r-edu-row">
+                <span class="r-edu-inst">Diploma in Computer Engineering &mdash; Government Polytechnic, Pune</span>
+                <span class="r-edu-meta">95.60% | 2024&ndash;2027</span>
+              </div>
+              <div class="r-edu-row">
+                <span class="r-edu-inst">10th &mdash; D.I.C.&rsquo;s English Medium School</span>
+                <span class="r-edu-meta">95.60% | 2024</span>
+              </div>
+
+              <div class="r-sec-heading">CERTIFICATIONS</div>
+              <div class="r-cert-grid">
+                <div class="r-cert-item">
+                  <span class="r-cert-title">Learn Java Programming: Beginner to Master</span>
+                  <span class="r-cert-issuer">Udemy (2026)</span>
+                </div>
+                <div class="r-cert-item">
+                  <span class="r-cert-title">Foundations of Prompt Engineering</span>
+                  <span class="r-cert-issuer">AWS Training &amp; Certification (2026)</span>
+                </div>
+                <div class="r-cert-item">
+                  <span class="r-cert-title">SQL and Relational Databases 101</span>
+                  <span class="r-cert-issuer">IBM Skills Network / Cognitive Class (2026)</span>
+                </div>
+                <div class="r-cert-item">
+                  <span class="r-cert-title">Artificial Intelligence Fundamentals</span>
+                  <span class="r-cert-issuer">IBM SkillsBuild (2026)</span>
+                </div>
+                <div class="r-cert-item">
+                  <span class="r-cert-title">Complete Python Bootcamp</span>
+                  <span class="r-cert-issuer">Udemy (2025)</span>
+                </div>
+                <div class="r-cert-item">
+                  <span class="r-cert-title">Claude 101</span>
+                  <span class="r-cert-issuer">Anthropic (2026)</span>
+                </div>
+              </div>
+
+              <div class="r-sec-heading">LANGUAGES &amp; INTERESTS</div>
+              <p class="r-lang-text">
+                <strong>Languages:</strong> English (Fluent), Hindi, Marathi &bull; <strong>Interests:</strong> Bike riding, fitness, travelling, cricket
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Sheet 2: Embedded Live PDF Viewer for visitors who want the exact PDF rendered directly in browser -->
+        <div id="resume-pdf-view" class="resume-pdf-container" style="display: none;">
+          <iframe src="resume.pdf" class="resume-pdf-iframe" title="Mukul Barhate Official Resume PDF"></iframe>
         </div>
       </div>
     </section>
@@ -2294,6 +2636,24 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   <script>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer  = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  window.showResumeTab = function(tab) {
+    const sheet = document.getElementById('resume-sheet-view');
+    const pdf = document.getElementById('resume-pdf-view');
+    const sheetBtn = document.getElementById('tab-sheet-btn');
+    const pdfBtn = document.getElementById('tab-pdf-btn');
+    if (tab === 'pdf') {
+      sheet.style.display = 'none';
+      pdf.style.display = 'block';
+      if (sheetBtn) sheetBtn.classList.remove('active');
+      if (pdfBtn) pdfBtn.classList.add('active');
+    } else {
+      sheet.style.display = 'flex';
+      pdf.style.display = 'none';
+      if (sheetBtn) sheetBtn.classList.add('active');
+      if (pdfBtn) pdfBtn.classList.remove('active');
+    }
+  };
 
   const state = {
     scrollY: 0,
@@ -2901,6 +3261,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   const heroPin = document.getElementById('hero-pin');
   const skillsSection = document.getElementById('skills');
   let skyUpdate = null;
+  window.addEventListener('sky-ready', () => { skyUpdate = window.__skyUpdate; });
 
   function tick() {
     state.scrollY = window.scrollY;
@@ -2921,7 +3282,8 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     renderConstellation();
     sweepReveals();
     renderCloud();
-    if (skyUpdate) skyUpdate(state);
+    if (window.__skyUpdate) window.__skyUpdate(state);
+    else if (skyUpdate) skyUpdate(state);
 
     requestAnimationFrame(tick);
   }
@@ -3301,12 +3663,17 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   }
   makeSatellite(0.5); makeSatellite(0.34); makeSatellite(0.62);
 
-  /* The 3D Rocket Launch Vehicle */
+  /* ---------------------------------------------------------
+     The launch vehicle. A lathed ogive hull with a painted skin,
+     an interstage, grid fins, landing legs and a nozzle cluster —
+     rather than a cone stuck on a tube.
+     --------------------------------------------------------- */
   function hullTexture() {
     const c = document.createElement('canvas');
     c.width = 256; c.height = 1024;
     const ctx = c.getContext('2d');
 
+    // base coat with cross-barrel shading so the cylinder never looks flat
     const g = ctx.createLinearGradient(0, 0, 256, 0);
     g.addColorStop(0.00, '#8f9aab');
     g.addColorStop(0.28, '#f4f7fb');
@@ -3316,96 +3683,143 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 256, 1024);
 
+    // v runs bottom(0) -> top(1); canvas y is inverted
     const band = (v0, v1, fill) => {
       ctx.fillStyle = fill;
       ctx.fillRect(0, (1 - v1) * 1024, 256, (v1 - v0) * 1024);
     };
 
-    band(0.000, 0.055, '#1c222c');
-    band(0.055, 0.062, '#6f7886');
-    band(0.620, 0.655, '#1c222c');
-    band(0.940, 0.955, '#1e3f8f');
+    band(0.000, 0.055, '#1c222c');   // scorched engine skirt
+    band(0.055, 0.062, '#6f7886');   // separation ring
+    band(0.435, 0.492, '#1c222c');   // interstage
+    band(0.492, 0.498, '#6f7886');
+    band(0.905, 0.912, '#2f6fe0');   // slim accent stripe below the fairing
 
-    ctx.fillStyle = '#1e3f8f';
-    ctx.fillRect(36, (1 - 0.55) * 1024, 8, 220);
-    ctx.fillRect(256 - 44, (1 - 0.55) * 1024, 8, 220);
+    // fine panel seams — low contrast, just enough to read as hardware
+    ctx.strokeStyle = 'rgba(110,124,145,0.30)';
+    ctx.lineWidth = 1;
+    for (let x = 16; x < 256; x += 32) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1024); ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(110,124,145,0.16)';
+    for (let y = 0; y < 1024; y += 58) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(256, y); ctx.stroke();
+    }
 
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
+    t.wrapS = THREE.RepeatWrapping;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
     return t;
   }
 
   const rocket = new THREE.Group();
-  const hullMat = new THREE.MeshStandardMaterial({
-    map: hullTexture(), roughness: 0.42, metalness: 0.12, transparent: true, opacity: 1
-  });
 
-  const R_BASE = 5.6;
-  const ogivePts = [];
-  for (let i = 0; i <= 24; i++) {
-    const v = i / 24;
-    const y = 84 + v * 32;
-    const r = R_BASE * Math.cos(v * Math.PI * 0.5);
-    ogivePts.push(new THREE.Vector2(Math.max(0.1, r), y));
+  /* Hull: one lathed profile from the boat-tail up through an ogive nose,
+     so the silhouette is a single continuous curve rather than a cone
+     balanced on a tube. */
+  const R = 6.0;
+  const profile = [
+    new THREE.Vector2(0.01, -48),
+    new THREE.Vector2(R * 0.80, -47.4),
+    new THREE.Vector2(R * 0.96, -45),
+    new THREE.Vector2(R, -42),
+    new THREE.Vector2(R, 24)
+  ];
+  // ogive nose — the radius falls away on a curve, not a straight taper
+  for (let i = 1; i <= 16; i++) {
+    const t = i / 16;
+    profile.push(new THREE.Vector2(R * Math.pow(Math.cos(t * Math.PI * 0.5), 0.55), 24 + t * 32));
   }
-  ogivePts.push(new THREE.Vector2(0, 116));
-  const ogiveGeo = new THREE.LatheGeometry(ogivePts, 40);
-  rocket.add(new THREE.Mesh(ogiveGeo, hullMat));
+  profile.push(new THREE.Vector2(0.01, 57));
 
-  const bodyGeo = new THREE.CylinderGeometry(R_BASE, R_BASE, 84, 40, 1, true);
-  const bodyMesh = new THREE.Mesh(bodyGeo, hullMat);
-  bodyMesh.position.y = 42;
-  rocket.add(bodyMesh);
+  const hull = new THREE.Mesh(
+    new THREE.LatheGeometry(profile, 96),
+    new THREE.MeshStandardMaterial({ map: hullTexture(), roughness: 0.34, metalness: 0.42 })
+  );
+  rocket.add(hull);
 
-  const skirtGeo = new THREE.CylinderGeometry(R_BASE, R_BASE * 1.08, 6, 40);
-  const skirtMat = new THREE.MeshStandardMaterial({ color: 0x1f242e, roughness: 0.8, metalness: 0.2 });
-  const skirtMesh = new THREE.Mesh(skirtGeo, skirtMat);
-  skirtMesh.position.y = -3;
-  rocket.add(skirtMesh);
+  const darkMetal = new THREE.MeshStandardMaterial({ color: 0x1b212b, roughness: 0.42, metalness: 0.8 });
+  const finMat    = new THREE.MeshStandardMaterial({ color: 0xe8edf5, roughness: 0.38, metalness: 0.45 });
 
-  /* Rocket Flame & Plume */
-  const flameGroup = new THREE.Group();
+  /* Four swept fins from a real tapered silhouette */
+  const finShape = new THREE.Shape();
+  finShape.moveTo(R - 0.6, -26);
+  finShape.lineTo(R - 0.6, -46);
+  finShape.lineTo(R + 9.5, -49);
+  finShape.lineTo(R + 9.5, -40);
+  finShape.lineTo(R - 0.6, -30);
+  finShape.closePath();
+
+  const finGeo = new THREE.ExtrudeGeometry(finShape, { depth: 0.9, bevelEnabled: false });
+  finGeo.translate(0, 0, -0.45);          // centre the thickness on the radius
+
+  for (let i = 0; i < 4; i++) {
+    const fin = new THREE.Mesh(finGeo, finMat);
+    fin.rotation.y = (i / 4) * Math.PI * 2;
+    rocket.add(fin);
+  }
+
+  /* One flared engine bell, lathed, instead of a cluster of stubby cylinders. */
+  const bellProfile = [
+    new THREE.Vector2(1.5, -47.5),
+    new THREE.Vector2(1.9, -49.5),
+    new THREE.Vector2(2.7, -51.5),
+    new THREE.Vector2(3.8, -53.5),
+    new THREE.Vector2(5.1, -55.4),
+    new THREE.Vector2(5.6, -56.2)
+  ];
+  rocket.add(new THREE.Mesh(
+    new THREE.LatheGeometry(bellProfile, 48),
+    new THREE.MeshStandardMaterial({ color: 0x2a3140, roughness: 0.3, metalness: 0.95, side: THREE.DoubleSide })
+  ));
+
+  // a collar where the bell meets the boat-tail
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 1.6, 2.2, 32), darkMetal);
+  collar.position.y = -47;
+  rocket.add(collar);
+
+  /* flame: a hot white core, an orange envelope, and a long faint plume */
   const flameMats = [];
-  function addFlameLayer(rTop, rBot, len, col, baseOpac) {
-    const geo = new THREE.ConeGeometry(rBot, len, 28, 1, true);
-    geo.translate(0, -len / 2, 0);
+  function makeFlame(radius, length, color, opacity) {
     const mat = new THREE.MeshBasicMaterial({
-      color: col, transparent: true, opacity: baseOpac, depthWrite: false, blending: THREE.AdditiveBlending
+      color, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false
     });
-    const mesh = new THREE.Mesh(geo, mat);
-    flameGroup.add(mesh);
-    flameMats.push({ mesh, mat, base: baseOpac, len });
+    const m = new THREE.Mesh(new THREE.ConeGeometry(radius, length, 32, 1, true), mat);
+    m.rotation.x = Math.PI;
+    m.position.y = -57 - length / 2;
+    rocket.add(m);
+    flameMats.push({ mesh: m, mat, base: opacity, length });
+    return m;
   }
-  addFlameLayer(2.5, 4.2, 54, 0xffffff, 0.95);
-  addFlameLayer(3.6, 7.8, 92, 0x8fcaff, 0.75);
-  addFlameLayer(4.5, 12.0, 140, 0x3b86ff, 0.45);
-  flameGroup.position.y = -6;
-  rocket.add(flameGroup);
+  makeFlame(6.2, 92, 0xff7a2a, 0.26);   // outer plume
+  makeFlame(4.0, 46, 0xffb04d, 0.70);   // envelope
+  makeFlame(2.0, 24, 0xdff0ff, 0.95);   // core
 
-  rocket.position.set(0, -60, -220);
-  rocket.scale.setScalar(0.78);
   scene.add(rocket);
 
-  /* Exhaust puffs particles */
-  const PUFF_COUNT = 36;
+  /* --- exhaust plume: a recycled pool of additive puffs --- */
   const puffs = [];
-  for (let i = 0; i < PUFF_COUNT; i++) {
+  for (let i = 0; i < 22; i++) {
     const mat = new THREE.SpriteMaterial({
-      map: disc, color: 0xffffff, transparent: true, opacity: 0,
+      map: disc, color: 0xffcfa0, transparent: true, opacity: 0,
       depthWrite: false, blending: THREE.AdditiveBlending
     });
     const sprite = new THREE.Sprite(mat);
     scene.add(sprite);
-    puffs.push({ sprite, mat, life: 0, vx: 0, vy: 0, size: 1 });
+    puffs.push({ sprite, mat, life: 0, vy: 0, vx: 0, size: 20 });
   }
-  let puffIdx = 0;
+  let puffCursor = 0, puffTimer = 0;
+
   function emitPuff(x, y, z) {
-    const p = puffs[puffIdx++ % PUFF_COUNT];
+    const p = puffs[puffCursor];
+    puffCursor = (puffCursor + 1) % puffs.length;
     p.sprite.position.set(x + (Math.random() - 0.5) * 12, y, z + (Math.random() - 0.5) * 12);
+    p.size = 15 + Math.random() * 13;
+    p.vy = -1.8 - Math.random() * 1.5;
+    p.vx = (Math.random() - 0.5) * 1.6;
     p.life = 1;
-    p.vx = (Math.random() - 0.5) * 3.5;
-    p.vy = -1.5 - Math.random() * 2.5;
-    p.size = 28 + Math.random() * 24;
   }
 
   /* Deep Space Celestial Planets */
@@ -3751,7 +4165,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   const NEAR_TOP = new THREE.Color('#04060e'), NEAR_BOT = new THREE.Color('#101c3d');
   const FAR_TOP  = new THREE.Color('#020309'), FAR_BOT  = new THREE.Color('#070a18');
 
-  let camX = 0, camY = 0, time = 0, visible = true, puffTimer = 0;
+  let camX = 0, camY = 0, time = 0, visible = true;
 
   /* Post-processing: UnrealBloom and Film Grain Shader */
   const usePost = !reduce && window.innerWidth >= 900;
@@ -3850,53 +4264,80 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     const far = sat(p, 0.05, 0.45);
     skyUniforms.uTop.value.copy(NEAR_TOP).lerp(FAR_TOP, far);
     skyUniforms.uBot.value.copy(NEAR_BOT).lerp(FAR_BOT, far);
-    skyUniforms.uGround.value = L < 0 ? 1 : Math.max(0, 1 - sat(L, 0.04, 0.55));
+    skyUniforms.uGround.value = L < 0 ? 1 : Math.max(0, 1 - L * 2.6);
 
-    starMat.opacity = (0.20 + sat(p, 0.0, 0.25) * 0.72) * (0.35 + clutter * 0.65);
-    dustMat.opacity = sat(p, 0.08, 0.35) * (1 - sat(p, 0.7, 0.98)) * 0.55 * clutter;
+    const flyZ = reduce ? 0 : -p * (FIELD_DEPTH * 0.6);
 
-    nebulaMats.forEach(m => {
-      m.opacity = sat(p, 0.22, 0.55) * 0.22 * clutter;
+    starMat.opacity = 0.35 + 0.65 * sat(L < 0 ? 0 : L, 0.1, 0.7);
+    dustMat.opacity = 0.5 * sat(p, 0.1, 0.4);
+    dust.position.z = flyZ;
+
+    const neb = sat(p, 0.25, 0.6);
+    nebulaMats.forEach((m, i) => { m.opacity = neb * (0.022 + i * 0.007) * clutter; });
+    nebulaGroup.children.forEach((s, i) => {
+      s.position.x += Math.sin(time * 0.12 + i) * s.userData.drift * 0.5;
+      s.position.y += Math.cos(time * 0.09 + i) * s.userData.drift * 0.3;
     });
 
-    const flyZ = p * -1800;
-    home.rotation.y = time * 0.015;
-    homeClouds.rotation.y = time * 0.022;
+    /* ---- Earth ---- */
+    const homeIn = (L < 0 ? 0 : sat(L, 0.35, 0.9)) * (1 - sat(p, 0.06, 0.34));
+    homeSurface.material.opacity = homeIn;
+    homeClouds.material.opacity = homeIn * 0.85;
+    home.visible = homeIn > 0.01;
+    home.rotation.y += 0.00035;
+    homeClouds.rotation.y += 0.00012;
+    home.position.set(0, -1150 - p * 900, -700 + flyZ * 0.35);
 
-    const homeOp = sat(p, 0.02, 0.18) * (1 - sat(p, 0.55, 0.85));
-    homeSurface.material.opacity = homeOp;
-    homeClouds.material.opacity = homeOp * 0.55;
+    const ma = time * 0.06;
+    moon.position.set(
+      home.position.x + Math.cos(ma) * 1500,
+      home.position.y + 700 + Math.sin(ma) * 220,
+      home.position.z + Math.sin(ma) * 900
+    );
+    moon.material.opacity = homeIn;
+    moon.visible = homeIn > 0.01;
 
-    moon.position.set(420, 260, flyZ - 650);
-    moon.material.opacity = sat(p, 0.12, 0.35) * (1 - sat(p, 0.65, 0.9)) * 0.8;
-
-    satellites.forEach((g, i) => {
-      const a = time * (0.08 + i * 0.03) + i * 2.1;
-      g.position.set(Math.cos(a) * (340 + i * 70), Math.sin(a) * (140 + i * 50), flyZ - 420 - i * 140);
-      g.rotation.y = a;
-      g.children.forEach(c => { if (c.material) c.material.opacity = sat(p, 0.08, 0.25) * (1 - sat(p, 0.6, 0.85)); });
+    /* ---- satellites ---- */
+    const satIn = (L < 0 ? 0 : sat(L, 0.5, 1)) * (1 - sat(p, 0.10, 0.24));
+    satellites.forEach((s, i) => {
+      const t = time * (0.05 + i * 0.02) + i * 2.2;
+      s.position.set(
+        Math.sin(t) * (360 + i * 170),
+        Math.cos(t * 0.8) * (170 + i * 80) + 60,
+        -620 - i * 300 + flyZ * 0.5
+      );
+      s.rotation.y = t * 0.6;
+      s.rotation.x = Math.sin(t * 0.4) * 0.3;
+      s.visible = satIn > 0.02;
+      s.traverse(o => { if (o.material) o.material.opacity = satIn; });
     });
 
-    planets.forEach(pl => {
-      const op = sat(p, pl.appear - 0.08, pl.appear + 0.08) * (1 - sat(p, pl.appear + 0.22, pl.appear + 0.38)) * clutter;
-      pl.surface.material.opacity = op;
-      if (pl.ringMesh) pl.ringMesh.material.opacity = op * 0.6;
-      pl.group.rotation.y += pl.spin;
+    /* ---- outer planets ---- */
+    for (const pl of planets) {
+      const inView = sat(p, pl.appear - 0.08, pl.appear + 0.08) * (1 - sat(p, pl.appear + 0.22, pl.appear + 0.38)) * clutter;
+      pl.surface.material.opacity = inView * 0.5;
+      if (pl.ringMesh) pl.ringMesh.material.opacity = inView * 0.22;
       pl.group.position.z = flyZ - pl.dist;
-    });
+      pl.group.rotation.y += pl.spin;
+      pl.group.visible = inView > 0.01;
+    }
 
-    /* Rocket launch physics */
-    let thrust = 0, stretch = 1;
-    if (L < 0) {
-      rocket.position.set(0, -60, -220);
+    /* ---- the rocket ---- */
+    let thrust, stretch;
+    const halfW = Math.tan(THREE.MathUtils.degToRad(31)) * 290 * camera.aspect;
+
+    if (reduce) {
+      rocket.visible = false; thrust = 0; stretch = 1;
+    } else if (L < 0) {
+      rocket.position.set(halfW * 0.60, -80, -250);
+      rocket.rotation.z = 0;
       rocket.visible = true;
+      thrust = 0.16; stretch = 0.9;
     } else if (L < 1) {
+      rocket.position.set(halfW * 0.60, -80 + Math.pow(L, 1.8) * 900, -250);
+      rocket.rotation.z = -L * 0.22;
       rocket.visible = true;
-      thrust = sat(L, 0.0, 0.08);
-      const easeL = L * L * (3 - 2 * L);
-      rocket.position.y = -60 + easeL * 1400;
-      rocket.position.z = -220 - easeL * 800;
-      stretch = 1 + sat(L, 0.15, 0.7) * 0.45;
+      thrust = 1; stretch = 1 + L * 0.9;
     } else {
       rocket.visible = false; thrust = 0; stretch = 1;
     }
@@ -3921,7 +4362,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
       q.mat.opacity = Math.max(0, q.life * q.life * 0.20);
     }
 
-    /* Camera parallax & liftoff shake */
+    /* ---- camera ---- */
     camX = camX + (state.mouseX * 42 - camX) * 0.045;
     camY = camY + (-state.mouseY * 28 - camY) * 0.045;
     const shake = (L >= 0 && L < 1) ? sat(L, 0, 0.06) * (1 - sat(L, 0.1, 0.4)) * 4.5 : 0;
@@ -3930,7 +4371,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     camera.position.set(camX + sx, camY + sy, flyZ + 40);
     camera.lookAt(camX * 0.3, camY * 0.3, flyZ - 400);
 
-    /* Meteors */
+    /* ---- meteors ---- */
     if (p > 0.3 && !reduce) {
       for (const m of meteors) {
         if (m.life > 0) {
@@ -3968,7 +4409,6 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
   </script>
 
   <script>
-    window.addEventListener('sky-ready', () => { skyUpdate = window.__skyUpdate; });
     setTimeout(() => {
       if (!window.__skyUpdate) document.body.classList.add('no-webgl');
     }, 6500);
