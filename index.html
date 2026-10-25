@@ -1709,7 +1709,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
 
 /* The Authentic Document Sheet */
 .resume-paper-container {
-    background: #cbd5e1;
+    background: #0b1220;
     padding: clamp(0.75rem, 2.5vw, 2.2rem);
     border-radius: 8px;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -1720,183 +1720,258 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
 
 .resume-sheet {
     background: #ffffff;
-    color: #1a202c;
+    color: #1e293b;
     width: 100%;
     max-width: 860px;
     min-width: 300px;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
-    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    border-radius: 4px;
+    padding: clamp(1.4rem, 3.2vw, 2.5rem);
     font-family: var(--font-body);
+    position: relative;
+    box-sizing: border-box;
 }
 
-.resume-navy-banner {
-    background: #111e38;
-    background: linear-gradient(135deg, #0e1a32 0%, #172a50 100%);
-    color: #ffffff;
-    padding: clamp(1.8rem, 3.5vw, 2.6rem) clamp(1.6rem, 3.5vw, 2.8rem) clamp(1.4rem, 3vw, 2rem);
-    border-bottom: 3px solid #2b4c7e;
+/* Header with Contact and Photo */
+.resume-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1.1rem;
 }
 
-.resume-banner-name {
+.resume-header-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.resume-name {
     font-family: var(--font-body);
-    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
     font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    color: #162a45;
     margin: 0;
-    color: #ffffff;
     line-height: 1.1;
-}
-
-.resume-banner-role {
-    font-family: var(--font-body);
-    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-    font-weight: 500;
-    color: #8fcaff;
-    margin: 0.4rem 0 0.8rem;
     letter-spacing: 0.02em;
 }
 
-.resume-banner-meta {
+.resume-role {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+    font-weight: 600;
+    color: #0284c7;
+    margin: 0.35rem 0 0.55rem 0;
+}
+
+.resume-meta-list {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    font-family: var(--font-body);
-    font-size: 0.84rem;
-    color: #cbd5e1;
+    gap: 0.25rem;
+    font-size: 0.83rem;
+    color: #475569;
+    line-height: 1.45;
 }
-.resume-banner-meta a {
-    color: #93c5fd;
+
+.resume-meta-list a {
+    color: #2563eb;
     text-decoration: none;
     transition: color 0.15s;
 }
-.resume-banner-meta a:hover {
-    color: #ffffff;
+
+.resume-meta-list a:hover {
+    color: #1d4ed8;
     text-decoration: underline;
 }
 
-.resume-sheet-content {
-    padding: clamp(1.6rem, 3.5vw, 2.8rem);
-    font-size: 0.9rem;
-    line-height: 1.55;
-    color: #1e293b;
+.resume-photo-frame {
+    flex-shrink: 0;
+    width: 92px;
+    height: 112px;
+    border-radius: 8px;
+    border: 2px solid #38bdf8;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+    background: #e2e8f0;
 }
 
-.r-sec-heading {
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #0f172a;
-    border-bottom: 1.5px solid #0f172a;
-    padding-bottom: 0.25rem;
-    margin: 1.4rem 0 0.75rem;
+.resume-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 12%;
+    display: block;
 }
-.r-sec-heading:first-child { margin-top: 0; }
+
+/* Professional Summary Card */
+.resume-summary-card {
+    background: #f0f7fd;
+    border: 1px solid #dbeafe;
+    border-radius: 6px;
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 1.35rem;
+}
+
+.r-summary-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #162a45;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
 
 .r-summary-text {
-    font-size: 0.88rem;
-    line-height: 1.6;
+    font-size: 0.84rem;
+    line-height: 1.5;
     color: #334155;
     margin: 0;
 }
 
-.r-skills-grid {
+/* Two-column layout */
+.resume-two-col {
     display: grid;
-    grid-template-columns: 140px minmax(0, 1fr);
-    gap: 0.45rem 1rem;
-    font-size: 0.86rem;
-    align-items: baseline;
-}
-.r-skill-label {
-    font-weight: 700;
-    color: #0f172a;
-}
-.r-skill-val {
-    color: #334155;
+    grid-template-columns: 1.32fr 1fr;
+    gap: 1.8rem;
+    align-items: start;
 }
 
+.resume-col-left, .resume-col-right {
+    min-width: 0;
+}
+
+.r-section-title {
+    font-size: 0.88rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #162a45;
+    border-bottom: 1.5px solid #cbd5e1;
+    padding-bottom: 0.25rem;
+    margin: 0 0 0.75rem 0;
+}
+
+/* Projects in Left Column */
 .r-project-item {
     margin-bottom: 1.15rem;
 }
-.r-project-item:last-child { margin-bottom: 0; }
+.r-project-item:last-child {
+    margin-bottom: 0;
+}
+
 .r-project-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.3rem 0.8rem;
+    gap: 0.2rem 0.5rem;
 }
+
 .r-project-title {
+    font-size: 0.92rem;
     font-weight: 700;
-    font-size: 0.95rem;
-    color: #0f172a;
+    color: #1d4ed8;
+    margin: 0;
 }
+
 .r-project-badge {
     font-size: 0.76rem;
     color: #64748b;
     font-style: italic;
 }
+
 .r-project-stack {
-    font-size: 0.82rem;
-    color: #2563eb;
+    font-size: 0.78rem;
+    color: #4b5563;
+    margin: 0.2rem 0 0.35rem;
     font-weight: 500;
-    margin: 0.15rem 0 0.35rem;
+    line-height: 1.4;
 }
+
 .r-project-bullets {
-    margin: 0.35rem 0 0.4rem 1.25rem;
+    margin: 0.25rem 0 0.45rem 1.15rem;
     padding: 0;
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     color: #334155;
-    line-height: 1.5;
+    line-height: 1.45;
 }
+
 .r-project-bullets li {
     margin-bottom: 0.25rem;
 }
+
 .r-project-link {
-    font-size: 0.82rem;
-    color: #1d4ed8;
+    font-size: 0.79rem;
+    color: #2563eb;
     text-decoration: none;
     font-family: var(--font-mono);
+    word-break: break-all;
 }
-.r-project-link:hover { text-decoration: underline; }
+.r-project-link:hover {
+    text-decoration: underline;
+}
 
-.r-edu-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 0.88rem;
-    margin-bottom: 0.45rem;
-    flex-wrap: wrap;
-    gap: 0.2rem 1rem;
+/* Education in Right Column */
+.r-edu-block {
+    margin-bottom: 0.75rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
 }
-.r-edu-inst { font-weight: 700; color: #0f172a; }
-.r-edu-meta { font-weight: 600; color: #1e40af; }
-
-.r-cert-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.7rem 1.6rem;
-}
-.r-cert-item {
-    font-size: 0.86rem;
-}
-.r-cert-title {
+.r-edu-degree {
     font-weight: 700;
     color: #0f172a;
-    display: block;
 }
-.r-cert-issuer {
+.r-edu-school {
+    color: #475569;
+}
+.r-edu-score {
     color: #64748b;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
 }
 
-.r-lang-text {
-    font-size: 0.86rem;
+/* Technical Skills */
+.r-skill-group {
+    margin-bottom: 0.65rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+.r-skill-cat {
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.1rem;
+}
+.r-skill-list {
     color: #334155;
-    margin: 0;
+}
+
+/* Certifications */
+.r-cert-block {
+    margin-bottom: 0.6rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+.r-cert-name {
+    font-weight: 700;
+    color: #0f172a;
+}
+.r-cert-meta {
+    color: #64748b;
+    font-size: 0.77rem;
+}
+
+/* Interests & Languages */
+.r-simple-sec {
+    font-size: 0.82rem;
+    color: #334155;
+    line-height: 1.45;
+    margin-bottom: 0.9rem;
+}
+
+.resume-footer-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #162a45 0%, #0284c7 100%);
+    border-radius: 2px;
+    margin-top: 1.4rem;
 }
 
 /* PDF iframe container */
@@ -1914,11 +1989,29 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
     border: none;
 }
 
-@media (max-width: 640px) {
-    .r-skills-grid { grid-template-columns: 1fr; gap: 0.2rem; }
-    .r-cert-grid { grid-template-columns: 1fr; }
-    .resume-toolbar { flex-direction: column; align-items: stretch; }
-    .resume-toolbar-actions { justify-content: flex-start; }
+@media (max-width: 768px) {
+    .resume-two-col {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .resume-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .resume-toolbar-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 520px) {
+    .resume-header-row {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+    }
+    .resume-photo-frame {
+        width: 80px;
+        height: 98px;
+    }
 }
 
 @media print {
@@ -1928,8 +2021,10 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
         position: absolute;
         left: 0; top: 0;
         width: 100%;
+        max-width: 100%;
         box-shadow: none;
         border: none;
+        padding: 0;
     }
 }
 
@@ -2774,7 +2869,7 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
               </svg>
               <span>Download PDF</span>
             </a>
-            <a href="resume.pdf?v=2" target="_blank" rel="noopener" class="btn-resume-action btn-resume-ghost">
+            <a href="resume.pdf?v=3" target="_blank" rel="noopener" class="btn-resume-action btn-resume-ghost">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15 3 21 3 21 9"></polyline>
@@ -2793,130 +2888,157 @@ main, .site-header, .site-footer { transition: opacity 1.1s ease 0.15s; }
           </div>
         </div>
 
-        <!-- Sheet 1: Exact Render of Mukul's Uploaded Resume (Navy Banner + White ATS Layout) -->
+        <!-- Sheet 1: Exact Render of Mukul's Uploaded Resume (White 2-Column Professional Layout with Photo) -->
         <div id="resume-sheet-view" class="resume-paper-container">
           <article class="resume-sheet" aria-label="Mukul Barhate Curriculum Vitae">
-            <!-- Dark Navy ATS Banner matching screenshot -->
-            <header class="resume-navy-banner">
-              <h1 class="resume-banner-name">MUKUL BARHATE</h1>
-              <p class="resume-banner-role">Python Developer | AI/ML &amp; Full-Stack</p>
-              <div class="resume-banner-meta">
-                <div>Pune, Maharashtra &bull; +91 8626068010 &bull; <a href="mailto:mukulbarhate09@gmail.com">mukulbarhate09@gmail.com</a></div>
-                <div><a href="https://linkedin.com/in/mukul-barhate-23857139b" target="_blank" rel="noopener">linkedin.com/in/mukul-barhate-23857139b</a> &bull; <a href="https://github.com/mukul135" target="_blank" rel="noopener">github.com/mukul135</a></div>
+            <!-- Header Section with Info and Profile Photo -->
+            <header class="resume-header-row">
+              <div class="resume-header-info">
+                <h1 class="resume-name">MUKUL BARHATE</h1>
+                <p class="resume-role">Python Developer | AI/ML &amp; Full-Stack</p>
+                <div class="resume-meta-list">
+                  <div>Pune, Maharashtra &nbsp;|&nbsp; +91 8626068010 &nbsp;|&nbsp; <a href="mailto:mukulbarhate09@gmail.com">mukulbarhate09@gmail.com</a></div>
+                  <div><a href="https://linkedin.com/in/mukul-barhate-23857139b" target="_blank" rel="noopener">linkedin.com/in/mukul-barhate-23857139b</a> &nbsp;|&nbsp; <a href="https://github.com/mukul135" target="_blank" rel="noopener">github.com/mukul135</a></div>
+                  <div>Portfolio: <a href="https://mukul-portfolio-six.vercel.app" target="_blank" rel="noopener">mukul-portfolio-six.vercel.app</a></div>
+                </div>
+              </div>
+              <div class="resume-photo-frame">
+                <img src="img/mukul.jpg" alt="Mukul Barhate" class="resume-photo">
               </div>
             </header>
 
-            <!-- White Document Sheet Body matching screenshot -->
-            <div class="resume-sheet-content">
-              <div class="r-sec-heading">PROFESSIONAL SUMMARY</div>
+            <!-- Professional Summary Box -->
+            <div class="resume-summary-card">
+              <div class="r-summary-title">PROFESSIONAL SUMMARY</div>
               <p class="r-summary-text">
                 Final-year Computer Engineering diploma student at Government Polytechnic, Pune, with a 95.60% academic score. I enjoy building practical applications with Python, Flask, databases, OCR, NLP and computer vision, and I am looking for an internship or entry-level role where I can keep learning and contribute to real projects.
               </p>
-
-              <div class="r-sec-heading">TECHNICAL SKILLS</div>
-              <div class="r-skills-grid">
-                <div class="r-skill-label">Programming</div>
-                <div class="r-skill-val">Python, Java, C, C++, SQL, HTML5, CSS3</div>
-
-                <div class="r-skill-label">Backend &amp; App</div>
-                <div class="r-skill-val">Flask, REST APIs, Jinja2, Android (Java/XML)</div>
-
-                <div class="r-skill-label">AI/ML &amp; Vision</div>
-                <div class="r-skill-val">scikit-learn, spaCy, OpenCV, MediaPipe, YOLOv8, Tesseract OCR, Hugging Face, Gemini API</div>
-
-                <div class="r-skill-label">Databases &amp; Tools</div>
-                <div class="r-skill-val">MySQL, Oracle, Firebase (Firestore/Auth), Git, GitHub</div>
-              </div>
-
-              <div class="r-sec-heading">SELECTED PROJECTS</div>
-              
-              <div class="r-project-item">
-                <div class="r-project-header">
-                  <span class="r-project-title">MediSuite AI Agent</span>
-                </div>
-                <div class="r-project-stack">Python &bull; Flask &bull; MySQL &bull; Tesseract OCR &bull; spaCy &bull; scikit-learn</div>
-                <ul class="r-project-bullets">
-                  <li>Built an insurance-claim workflow that extracts details from scanned documents using OCR and processes claims through a multi-stage review.</li>
-                  <li>Trained a Logistic Regression claim model (92% accuracy, 98.4% ROC-AUC) with fraud checks, secure login, claim history and report summarization.</li>
-                </ul>
-                <a href="https://github.com/mukul135/MediSuite-AI-Agent" target="_blank" rel="noopener" class="r-project-link">github.com/mukul135/MediSuite-AI-Agent</a>
-              </div>
-
-              <div class="r-project-item">
-                <div class="r-project-header">
-                  <span class="r-project-title">RoadGuard – AI Pothole Detection &amp; Rewards</span>
-                  <span class="r-project-badge">Team project</span>
-                </div>
-                <div class="r-project-stack">Flask &bull; Python &bull; YOLOv8 &bull; Firebase &bull; Docker &bull; React/TypeScript</div>
-                <ul class="r-project-bullets">
-                  <li>Built Flask REST API endpoints for pothole reports, duplicate checks, suspicious-report review and request rate limiting.</li>
-                  <li>Connected Firebase Authentication and security rules, and helped containerize the app with Docker.</li>
-                </ul>
-                <a href="https://github.com/ishanagnihotri2009-a11y/RoadGuard" target="_blank" rel="noopener" class="r-project-link">github.com/ishanagnihotri2009-a11y/RoadGuard</a>
-              </div>
-
-              <div class="r-project-item">
-                <div class="r-project-header">
-                  <span class="r-project-title">Outfit Studio – AI Personal Styling App</span>
-                  <span class="r-project-badge">Team capstone</span>
-                </div>
-                <div class="r-project-stack">Android (Java/XML) &bull; Flask REST API &bull; MySQL &bull; Gemini API</div>
-                <ul class="r-project-bullets">
-                  <li>Developed JWT-secured registration and login, selfie-based skin-tone analysis and personalized color palettes.</li>
-                  <li>Added an AI digital wardrobe, occasion-based outfit generation with compatibility scores, weather-aware suggestions and 2D virtual try-on.</li>
-                </ul>
-                <a href="https://github.com/bhaveshc21/NEW-Outfit-Studio-" target="_blank" rel="noopener" class="r-project-link">github.com/bhaveshc21/NEW-Outfit-Studio-</a>
-              </div>
-
-              <div class="r-sec-heading">EDUCATION</div>
-              <div class="r-edu-row">
-                <span class="r-edu-inst">Diploma in Computer Engineering &mdash; Government Polytechnic, Pune</span>
-                <span class="r-edu-meta">95.60% | 2024&ndash;2027</span>
-              </div>
-              <div class="r-edu-row">
-                <span class="r-edu-inst">10th &mdash; D.I.C.&rsquo;s English Medium School</span>
-                <span class="r-edu-meta">95.60% | 2024</span>
-              </div>
-
-              <div class="r-sec-heading">CERTIFICATIONS</div>
-              <div class="r-cert-grid">
-                <div class="r-cert-item">
-                  <span class="r-cert-title">Learn Java Programming: Beginner to Master</span>
-                  <span class="r-cert-issuer">Udemy (2026)</span>
-                </div>
-                <div class="r-cert-item">
-                  <span class="r-cert-title">Foundations of Prompt Engineering</span>
-                  <span class="r-cert-issuer">AWS Training &amp; Certification (2026)</span>
-                </div>
-                <div class="r-cert-item">
-                  <span class="r-cert-title">SQL and Relational Databases 101</span>
-                  <span class="r-cert-issuer">IBM Skills Network / Cognitive Class (2026)</span>
-                </div>
-                <div class="r-cert-item">
-                  <span class="r-cert-title">Artificial Intelligence Fundamentals</span>
-                  <span class="r-cert-issuer">IBM SkillsBuild (2026)</span>
-                </div>
-                <div class="r-cert-item">
-                  <span class="r-cert-title">Complete Python Bootcamp</span>
-                  <span class="r-cert-issuer">Udemy (2025)</span>
-                </div>
-                <div class="r-cert-item">
-                  <span class="r-cert-title">Claude 101</span>
-                  <span class="r-cert-issuer">Anthropic (2026)</span>
-                </div>
-              </div>
-
-              <div class="r-sec-heading">LANGUAGES &amp; INTERESTS</div>
-              <p class="r-lang-text">
-                <strong>Languages:</strong> English (Fluent), Hindi, Marathi &bull; <strong>Interests:</strong> Bike riding, fitness, travelling, cricket
-              </p>
             </div>
+
+            <!-- Two Column Content Grid -->
+            <div class="resume-two-col">
+              <!-- Left Column: Projects -->
+              <div class="resume-col-left">
+                <div class="r-section-title">PROJECTS</div>
+
+                <!-- Project 1: MediSuite AI Agent -->
+                <div class="r-project-item">
+                  <h3 class="r-project-title">MediSuite AI Agent</h3>
+                  <div class="r-project-stack">Python &bull; Flask &bull; MySQL &bull; Tesseract OCR &bull; spaCy &bull; scikit-learn</div>
+                  <ul class="r-project-bullets">
+                    <li>Built an insurance-claim workflow that extracts details from scanned documents using OCR and processes claims through a multi-stage review.</li>
+                    <li>Trained a Logistic Regression claim model (92% accuracy, 98.4% ROC-AUC) with fraud checks, secure login, claim history and report summarization.</li>
+                  </ul>
+                  <a href="https://github.com/mukul135/MediSuite-AI-Agent" target="_blank" rel="noopener" class="r-project-link">github.com/mukul135/MediSuite-AI-Agent</a>
+                </div>
+
+                <!-- Project 2: RoadGuard -->
+                <div class="r-project-item">
+                  <div class="r-project-header">
+                    <h3 class="r-project-title">RoadGuard – AI Pothole Detection &amp; Rewards</h3>
+                    <span class="r-project-badge">Team project</span>
+                  </div>
+                  <div class="r-project-stack">Flask &bull; Python &bull; YOLOv8 &bull; Firebase &bull; Docker &bull; React/TypeScript</div>
+                  <ul class="r-project-bullets">
+                    <li>Built Flask REST API endpoints for pothole reports, duplicate checks, suspicious-report review and request rate limiting.</li>
+                    <li>Connected Firebase Authentication and security rules, and helped containerize the app with Docker.</li>
+                  </ul>
+                </div>
+
+                <!-- Project 3: Outfit Studio -->
+                <div class="r-project-item">
+                  <div class="r-project-header">
+                    <h3 class="r-project-title">Outfit Studio – AI Personal Styling App</h3>
+                    <span class="r-project-badge">Team capstone</span>
+                  </div>
+                  <div class="r-project-stack">Android (Java/XML) &bull; Flask REST API &bull; MySQL &bull; Gemini API</div>
+                  <ul class="r-project-bullets">
+                    <li>Developed JWT-secured registration and login, selfie-based skin-tone analysis and personalized color palettes.</li>
+                    <li>Added an AI digital wardrobe, occasion-based outfit generation with compatibility scores, weather-aware suggestions and 2D virtual try-on.</li>
+                  </ul>
+                  <a href="https://github.com/bhaveshc21/NEW-Outfit-Studio-" target="_blank" rel="noopener" class="r-project-link">github.com/bhaveshc21/NEW-Outfit-Studio</a>
+                </div>
+              </div>
+
+              <!-- Right Column: Education, Skills, Certifications, Interests, Languages -->
+              <div class="resume-col-right">
+                <!-- Education -->
+                <div class="r-section-title">EDUCATION</div>
+                <div class="r-edu-block">
+                  <div class="r-edu-degree">Diploma in Computer Engineering</div>
+                  <div class="r-edu-school">Government Polytechnic, Pune</div>
+                  <div class="r-edu-score">2024–2027 &nbsp;|&nbsp; 95.60%</div>
+                </div>
+                <div class="r-edu-block">
+                  <div class="r-edu-degree">10th</div>
+                  <div class="r-edu-school">D.I.C.'s English Medium School</div>
+                  <div class="r-edu-score">2024 &nbsp;|&nbsp; 95.60%</div>
+                </div>
+
+                <!-- Technical Skills -->
+                <div class="r-section-title">TECHNICAL SKILLS</div>
+                <div class="r-skill-group">
+                  <div class="r-skill-cat">Programming</div>
+                  <div class="r-skill-list">Python, Java, C, C++, SQL, HTML5, CSS3</div>
+                </div>
+                <div class="r-skill-group">
+                  <div class="r-skill-cat">Backend &amp; App</div>
+                  <div class="r-skill-list">Flask, REST APIs, Jinja2, Android (Java/XML)</div>
+                </div>
+                <div class="r-skill-group">
+                  <div class="r-skill-cat">AI/ML &amp; Vision</div>
+                  <div class="r-skill-list">scikit-learn, spaCy, OpenCV, MediaPipe, YOLOv8, Tesseract OCR, Hugging Face, Gemini API</div>
+                </div>
+                <div class="r-skill-group">
+                  <div class="r-skill-cat">Databases &amp; Tools</div>
+                  <div class="r-skill-list">MySQL, Oracle, Firebase (Firestore/Auth), Git, GitHub</div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="r-section-title">CERTIFICATIONS</div>
+                <div class="r-cert-block">
+                  <div class="r-cert-name">Learn Java Programming: Beginner to Master</div>
+                  <div class="r-cert-meta">Udemy (2026)</div>
+                </div>
+                <div class="r-cert-block">
+                  <div class="r-cert-name">Foundations of Prompt Engineering</div>
+                  <div class="r-cert-meta">AWS Training &amp; Certification (2026)</div>
+                </div>
+                <div class="r-cert-block">
+                  <div class="r-cert-name">SQL and Relational Databases 101</div>
+                  <div class="r-cert-meta">IBM Skills Network / Cognitive Class (2026)</div>
+                </div>
+                <div class="r-cert-block">
+                  <div class="r-cert-name">Artificial Intelligence Fundamentals</div>
+                  <div class="r-cert-meta">IBM SkillsBuild (2026)</div>
+                </div>
+                <div class="r-cert-block">
+                  <div class="r-cert-name">Complete Python Bootcamp</div>
+                  <div class="r-cert-meta">Udemy (2025)</div>
+                </div>
+                <div class="r-cert-block">
+                  <div class="r-cert-name">Claude 101</div>
+                  <div class="r-cert-meta">Anthropic (2026)</div>
+                </div>
+
+                <!-- Interests & Hobbies -->
+                <div class="r-section-title">INTERESTS &amp; HOBBIES</div>
+                <div class="r-simple-sec">Bike riding, fitness, travelling, cricket</div>
+
+                <!-- Languages -->
+                <div class="r-section-title">LANGUAGES</div>
+                <div class="r-simple-sec">English (Fluent), Hindi, Marathi</div>
+              </div>
+            </div>
+
+            <!-- Bottom decorative accent matching resume -->
+            <div class="resume-footer-bar"></div>
           </article>
         </div>
 
         <!-- Sheet 2: Embedded Live PDF Viewer for visitors who want the exact PDF rendered directly in browser -->
         <div id="resume-pdf-view" class="resume-pdf-container" style="display: none;">
-          <iframe src="resume.pdf?v=2" class="resume-pdf-iframe" title="Mukul Barhate Official Resume PDF"></iframe>
+          <iframe src="resume.pdf?v=3" class="resume-pdf-iframe" title="Mukul Barhate Official Resume PDF"></iframe>
         </div>
       </div>
     </section>
